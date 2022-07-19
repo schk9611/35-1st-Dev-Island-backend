@@ -1,20 +1,20 @@
 import json, bcrypt
 
-from django.shortcuts import render
-from django.views     import View
-from django.http      import JsonResponse
+from django.views           import View
+from django.http            import JsonResponse
+from django.core.exceptions import ValidationError
 
-from users.models     import User
-from users.validation import validate_email, validate_password
+from users.models           import User
+from users.validation       import validate_email, validate_password
 
 class SignUpView(View):
     def post(self, request):
         try:
-            user = json.loads(request.body)
-            first_name = user['first_name']
-            last_name = user['last_name']
-            email = user['email']
-            password = user['password']
+            data = json.loads(request.body)
+            first_name = data['first_name']
+            last_name = data['last_name']
+            email = data['email']
+            password = data['password']
 
             validate_email(email)
             validate_password(password)
@@ -38,4 +38,7 @@ class SignUpView(View):
     
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
+
+        except ValidationError as error:
+            return JsonResponse({"message" : error.message}, status=400)
 
