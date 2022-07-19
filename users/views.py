@@ -14,11 +14,11 @@ from users.validation import validate_email, validate_password
 class SignUpView(View):
     def post(self, request):
         try:
-            data = json.loads(request.body)
+            data       = json.loads(request.body)
             first_name = data['first_name']
-            last_name = data['last_name']
-            email = data['email']
-            password = data['password']
+            last_name  = data['last_name']
+            email      = data['email']
+            password   = data['password']
 
             validate_email(email)
             validate_password(password)
