@@ -7,7 +7,7 @@ from products.models   import Product
 class DetailView(View):
     def get(self, request, product_id):
         try:
-            product = Product.objects.get(id == product_id)
+            product = Product.objects.get(id = product_id)
             product_list = {
                 'name'       : product.id,
                 'description': product.description,
