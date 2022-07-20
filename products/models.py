@@ -17,7 +17,7 @@ class Product(models.Model):
     name         = models.CharField(max_length=100)
     description  = models.CharField(max_length=500)
     content_url  = models.CharField(max_length=200)
-    price        = models.DecimalField(max_digits=6, decimal_places=2)
+    price        = models.DecimalField(max_digits=10, decimal_places=2)
     stock        = models.IntegerField()
     release_date = models.DateField()
     sub_category = models.ForeignKey('SubCategory', on_delete=models.CASCADE)
