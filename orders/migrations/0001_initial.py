@@ -9,59 +9,63 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('products', '0001_initial'),
+        ('users', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name='Order',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
             ],
             options={
-                'db_table': 'categories',
+                'db_table': 'orders',
             },
         ),
         migrations.CreateModel(
-            name='Product',
+            name='OrderProductStatus',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('description', models.CharField(max_length=500)),
-                ('content_url', models.CharField(max_length=200)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=6)),
-                ('stock', models.IntegerField()),
-                ('release_date', models.DateField()),
+                ('status', models.CharField(max_length=100)),
             ],
             options={
-                'db_table': 'products',
+                'db_table': 'order_products_status',
             },
         ),
         migrations.CreateModel(
-            name='SubCategory',
+            name='OrderStatus',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='products.category')),
+                ('status', models.CharField(max_length=100)),
             ],
             options={
-                'db_table': 'sub_categories',
+                'db_table': 'deliveries',
             },
         ),
         migrations.CreateModel(
-            name='ProductImage',
+            name='OrderProduct',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image_url', models.CharField(max_length=200)),
+                ('quantity', models.IntegerField()),
+                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='orders.order')),
+                ('order_product_status', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='orders.orderproductstatus')),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='products.product')),
             ],
             options={
-                'db_table': 'product_images',
+                'db_table': 'orders_products',
             },
         ),
         migrations.AddField(
-            model_name='product',
-            name='sub_category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='products.subcategory'),
+            model_name='order',
+            name='order_status',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='orders.orderstatus'),
+        ),
+        migrations.AddField(
+            model_name='order',
+            name='user',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='users.user'),
         ),
     ]
