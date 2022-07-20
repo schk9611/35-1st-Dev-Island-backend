@@ -30,4 +30,4 @@ class OrderProductStatus(models.Model):
     status = models.CharField(max_length=100)
 
     class Meta:
-        db_table = 'order_products_status'
+        db_table = 'order_products_status' 
