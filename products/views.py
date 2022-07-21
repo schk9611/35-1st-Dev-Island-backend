@@ -3,8 +3,8 @@ import json
 from django.http       import JsonResponse
 from django.views      import View
 
-from products.models   import Product, ProductImage
-class DetailView(View):
+from products.models   import Product
+class ProductDetailView(View):
     def get(self, request, product_id):
         try:
             product = Product.objects.get(id = product_id)
