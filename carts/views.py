@@ -5,10 +5,7 @@ from django.views    import View
 
 from carts.models    import Cart
 from users.utils     import signin_decorator
-from users.views     import LogInView
 from products.models import Product
-from users.models    import User
-
 
 class CartView(View):
     @signin_decorator
@@ -35,9 +32,10 @@ class CartView(View):
     @signin_decorator
     def get(self, request):
         cart_products = [{
-            'product_name' : cart.product.name,
-            'quantity'     : cart.quantity,
-            'price'        : cart.product.price}
+            'product_name': cart.product.name,
+            'quantity'    : cart.quantity,
+            'price'       : cart.product.price,
+            'images'      : [image.image_url for image in cart.product.productimage_set.all()]}
             for cart in Cart.objects.filter(user=request.user)]
         return JsonResponse({"cart" : cart_products}, status=200)
     
@@ -67,4 +65,3 @@ class CartView(View):
 
         except json.JSONDecodeError:
             return JsonResponse({'message':'JSONDecodeError'}, status=404)
-
