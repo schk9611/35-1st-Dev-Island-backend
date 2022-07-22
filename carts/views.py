@@ -36,3 +36,9 @@ class CartView(View):
     def get(self, request):
         cart_products = [[cart.product.name, cart.quantity, cart.product.price] for cart in Cart.objects.filter(user=request.user)]
         return JsonResponse({"cart" : cart_products}, status=200)
+    
+    @signin_decorator
+    def delete(self, request, cart_id):
+        if Cart.objects.filter(user=request.user, id=cart_id).delete()[0]:
+            return JsonResponse({"message":"SUCCESS"}, status=200)
+        return JsonResponse({"message":"텅"}, status=400)
