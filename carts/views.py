@@ -65,4 +65,3 @@ class CartView(View):
 
         except json.JSONDecodeError:
             return JsonResponse({'message':'JSONDecodeError'}, status=404)
-
