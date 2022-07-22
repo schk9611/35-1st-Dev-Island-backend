@@ -8,23 +8,20 @@ from products.models import Product, Category, SubCategory
 class ProductListView(View):
     def get(self, request, category):
 
-        show_list    = request.GET.get('show', 'home_audio') # all, portable, homeaudio
-        order_method = request.GET.get('sort_method', '-price') # price, -price,   release_date, -release_date
-        limit        = int(request.GET.get('limit', 3)) # 한 페이지에 보여줄 양
-        offset       = int(request.GET.get('offset', 0)) # 보내질 데이터의 시작
-
-        sub_categories = Category.objects.get(name=category).subcategory_set.all()
-        sub_category_ids = [sub_category.id for sub_category in sub_categories]
+        show_list    = request.GET.get('show', 'all')
+        order_method = request.GET.get('sort_method', '-release_date')
+        limit        = int(request.GET.get('limit', 10))
+        offset       = int(request.GET.get('offset', 0))
         
         products     = []
         res_products = []
 
         if show_list == 'all':
-            products = Product.objects.filter(Q(sub_category_id=sub_category_ids[0]) | Q(sub_category_id=sub_category_ids[1])).order_by(order_method)
-        elif show_list == 'portable':
-            products = Product.objects.filter(sub_category_id=sub_category_ids[0]).order_by(order_method)
-        elif show_list == 'home_audio':
-            products = Product.objects.filter(sub_category_id=sub_category_ids[1]).order_by(order_method)
+            category_id = Category.objects.get(name=category).id
+            products = Product.objects.filter(sub_category__category_id=category_id).order_by(order_method)
+        else:
+            sub_cate_id = SubCategory.objects.get(name=show_list).id
+            products = Product.objects.filter(sub_category_id=sub_cate_id).order_by(order_method)
 
         for product in products[offset:offset+limit]:
             res_products.append({
