@@ -4,11 +4,12 @@ from django.views import View
 from products.models import Product, Category, SubCategory
 
 class ProductListView(View):
-    def get(self, request, category):
+    def get(self, request):
         try:
+            category    = request.GET.get('category', 'speakers')
             show        = request.GET.get('show', 'all')
             sort_method = request.GET.get('sort_method', '-release_date')
-            limit       = int(request.GET.get('limit', 10))
+            limit       = int(request.GET.get('limit', 9))
             offset      = int(request.GET.get('offset', 0))
 
             if show == 'all':
