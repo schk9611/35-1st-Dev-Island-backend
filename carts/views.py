@@ -40,10 +40,19 @@ class CartView(View):
         return JsonResponse({"message" : "SUCCESS", "cart" : cart_products}, status=200)
     
     @signin_decorator
-    def delete(self, request, cart_id):
-        Cart.objects.filter(user=request.user, id=cart_id).delete()
-        return JsonResponse({"message":"DELETE_SUCCESS"}, status=200)
+    def delete(self, request):
+        try:
+            data = json.loads(request.body)
+            for cart_id in data['carts_id']:
+                Cart.objects.filter(user=request.user, id=cart_id).delete()
+            return JsonResponse({"message":"DELETE_SUCCESS"}, status=200)
 
+        except json.JSONDecodeError:
+            return JsonResponse({'message':'JSONDecodeError'}, status=404)
+        
+        except KeyError:
+            return JsonResponse({"message" : "KEY_ERROR"}, status=400)
+        
     @signin_decorator
     def patch(self, request, cart_id):
         try: 
