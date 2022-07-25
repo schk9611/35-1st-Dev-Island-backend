@@ -28,7 +28,7 @@ class ProductListView(View):
                     'release_date': product.release_date,
                 } for product in products[offset:offset+limit]] 
 
-            return JsonResponse({'RESULT':res_products, 'products_count' : products.count()}, status=200)
+            return JsonResponse({'RESULT':res_products, 'totalItems' : products.count()}, status=200)
         
         except Category.DoesNotExist:
             return JsonResponse({'message':'CATEGORY_DOES_NOT_EXIST'}, status=400)
