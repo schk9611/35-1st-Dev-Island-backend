@@ -72,7 +72,7 @@ class CartView(View):
             
             cart_product.quantity += data['quantity']
             cart_product.save()
-            return JsonResponse({"message" : "UPDATE_SUCCESS"})
+            return JsonResponse({"message" : "UPDATE_SUCCESS"}, status=200)
 
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
