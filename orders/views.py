@@ -1,34 +1,57 @@
-import json
+import datetime, re
+
 from django.http import JsonResponse
 
-from django.views import View
+from django.views  import View
 from orders.models import Order, OrderProduct
-from users.utils import signin_decorator
-from carts.models import Cart
+from users.models import User
+from users.utils   import signin_decorator
 
-class OrderView(View):
+class OrderView(View): 
     @signin_decorator
-    def post(self, request):
-        try:
-            data     = json.loads(request.body)
-            carts_id = data['carts_id']
-            
-            order = Order.objects.create(
-                order_status_id = 1,
-                user_id         = request.user.id
+    def get(self, request): 
+        order_num = re.sub(r'[^0-9]', '', str(datetime.datetime.now()))
+
+        orders_list = []
+        products_list = []
+
+        for order in Order.objects.filter(user=request.user):
+            orders_list.append(
+                {
+                    'id' : order.id,
+                    'order_num' : order_num,
+                    'user_name' : order.user.first_name + ' ' + order.user.last_name,
+                }
             )
-            for cart_id in carts_id:
-                cart = Cart.objects.get(id=cart_id)
-                OrderProduct.objects.create(
-                    order_id                = order.id,
-                    product_id              = cart.product.id,
-                    quantity                = cart.quantity,
-                    order_product_status_id = 1
+            for order_product in OrderProduct.objects.filter(order_id=order.id):
+                products_list.append(
+                    {
+                        'id' : order_product.id,
+                        'product_img' : [product_image for product_image in order_product.product.productimage_set.all()],
+                        'product_name' : order_product.product.name,
+                        'product_price' : order_product.product.price * order_product.quantity,
+                        'product_quantity' : order_product.quantity
+                    }
                 )
-            return JsonResponse({"message" : "ORDER_SUCCESS"}, status=201)
-        
-        except KeyError:
-            return JsonResponse({"message" : "KEY_ERROR"}, status=400)
-        
-        except json.JSONDecodeError:
-            return JsonResponse({'message' : 'JSONDecodeError'}, status=404)
+
+        # orders_list = [
+        #     {
+        #         'id'       : order.id,
+        #         'order_num': order_num,
+        #         'user_name': order.user.first_name + order.user.last_name
+        #     } for order in Order.objects.filter(user=request.user)
+        # ]
+        # print(orders_list)
+
+        # products_list = [
+        #     {
+        #         'id'              : order_product.id,
+        #         'product_img'     : order_product.product.productimg_set.image_url,
+        #         'product_name'    : order_product.product.name,
+        #         'product_price'   : order_product.product.price * order_product.quantity,
+        #         'product_quantity': order_product.quantity,
+        #     } for order_product in OrderProduct.objects.filter(order_id=)
+        # ]
+        # print(products_list)
+
+        return JsonResponse({'orders_list' : orders_list, 'products_list' : products_list}, status=200)
