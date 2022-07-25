@@ -18,6 +18,14 @@ class CartView(View):
             product  = Product.objects.get(id=data['product_id'])
             user     = request.user
             
+            if Cart.objects.filter(product_id = product.id).exists():
+                cart_product = Cart.objects.get(user=request.user, product_id=product.id)
+                if cart_product.product.stock < cart_product.quantity + quantity:
+                    return JsonResponse({"message" : "OUT_OF_STOCK"}, status=400)
+                cart_product.quantity += quantity
+                cart_product.save()
+                return JsonResponse({"message" : "CART_QUANTITY_INCREASED"}, status=200)
+
             Cart.objects.create(
                 quantity = quantity,
                 product  = product,
@@ -27,6 +35,9 @@ class CartView(View):
 
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
+
+        except Cart.DoesNotExist:
+            return JsonResponse({'message':'JSONDecodeError'}, status=404)
         
         except json.JSONDecodeError:
             return JsonResponse({'message':'JSONDecodeError'}, status=404)
@@ -55,53 +66,3 @@ class CartView(View):
         
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
-        
-    @signin_decorator
-    def patch(self, request, cart_id):
-        try: 
-            data         = json.loads(request.body)
-            cart_product = Cart.objects.get(user=request.user, id=cart_id)
-            
-            if cart_product.product.stock < data['stock']:
-                return JsonResponse({"message" : "OUT_OF_STOCK"}, status=400)
-            
-            cart_product.quantity = data['stock']
-            cart_product.save()
-            return JsonResponse({"message" : "UPDATE_SUCCESS"})
-
-        except KeyError:
-            return JsonResponse({"message" : "KEY_ERROR"}, status=400)
-
-        except Cart.DoesNotExist:
-            return JsonResponse({'message':'JSONDecodeError'}, status=404)
-
-        except json.JSONDecodeError:
-            return JsonResponse({'message':'JSONDecodeError'}, status=404)
-
-class CartToOrder(View):
-    @signin_decorator
-    def post(self, request):
-        try:
-            data     = json.loads(request.body)
-            carts_id = data['carts_id']
-            
-            order = Order.objects.create(
-                order_status_id = 1,
-                user_id         = request.user.id
-            )
-
-            for cart_id in carts_id:
-                cart = Cart.objects.get(id=cart_id)
-                OrderProduct.objects.create(
-                    order_id                = order.id,
-                    product_id              = cart.product.id,
-                    quantity                = cart.quantity,
-                    order_product_status_id = 1
-                )
-            return JsonResponse({"message" : "ORDER_SUCCESS"}, status=201)
-        
-        except KeyError:
-            return JsonResponse({"message" : "KEY_ERROR"}, status=400)
-        
-        except json.JSONDecodeError:
-            return JsonResponse({'message' : 'JSONDecodeError'}, status=404)
