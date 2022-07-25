@@ -16,18 +16,16 @@ class CartView(View):
             data     = json.loads(request.body)
             quantity = data['quantity']
             product  = Product.objects.get(id=data['product_id'])
-            
+
             cart, created = Cart.objects.get_or_create(
-                defaults  = {'quantity': quantity},
+                defaults  = {'quantity' : quantity},
                 product   = product,
                 user      = request.user
             )
-
             if not created:
                 cart.quantity += quantity
                 cart.save()
                 return JsonResponse({"message" : "CART_QUANTITY_CHANGED"}, status=200)
-            
             return JsonResponse({"message" : "PUT_IN_CART_SUCCESS"}, status=201)
 
         except KeyError:
@@ -54,8 +52,7 @@ class CartView(View):
     def delete(self, request):
         try:
             data = json.loads(request.body)
-            for cart_id in data['carts_id']:
-                Cart.objects.filter(user=request.user, id=cart_id).delete()
+            Cart.objects.filter(user=request.user, id__in=data['cart_ids']).delete()
             return JsonResponse({"message":"DELETE_SUCCESS"}, status=200)
 
         except json.JSONDecodeError:
@@ -63,3 +60,25 @@ class CartView(View):
         
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
+
+    @signin_decorator
+    def patch(self, request):
+        try: 
+            data         = json.loads(request.body)
+            cart_product = Cart.objects.get(user=request.user, id=data['cart_id'])
+            
+            if cart_product.product.stock < cart_product.quantity + data['quantity']:
+                return JsonResponse({"message" : "OUT_OF_STOCK"}, status=400)
+            
+            cart_product.quantity += data['quantity']
+            cart_product.save()
+            return JsonResponse({"message" : "UPDATE_SUCCESS"})
+
+        except KeyError:
+            return JsonResponse({"message" : "KEY_ERROR"}, status=400)
+
+        except Cart.DoesNotExist:
+            return JsonResponse({'message':'JSONDecodeError'}, status=404)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'message':'JSONDecodeError'}, status=404)
