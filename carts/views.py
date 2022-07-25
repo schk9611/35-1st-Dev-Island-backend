@@ -26,7 +26,7 @@ class CartView(View):
             if not created:
                 cart.quantity += quantity
                 cart.save()
-                return JsonResponse({"message" : "CART_QUANTITY_INCREASED"}, status=200)
+                return JsonResponse({"message" : "CART_QUANTITY_CHANGED"}, status=200)
             
             return JsonResponse({"message" : "PUT_IN_CART_SUCCESS"}, status=201)
 
