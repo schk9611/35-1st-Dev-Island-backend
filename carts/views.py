@@ -16,22 +16,19 @@ class CartView(View):
             data     = json.loads(request.body)
             quantity = data['quantity']
             product  = Product.objects.get(id=data['product_id'])
-            user     = request.user
             
             cart, created = Cart.objects.get_or_create(
-                defaults  = {'quantity': 0},
+                defaults  = {'quantity': quantity},
                 product   = product,
-                user      = user
+                user      = request.user
             )
-            cart.quantity += quantity
-            cart.save()
 
-            if created == True:
-                return JsonResponse({"message" : "PUT_IN_CART_SUCCESS"}, status=201)
+            if not created:
+                cart.quantity += quantity
+                cart.save()
+                return JsonResponse({"message" : "CART_QUANTITY_INCREASED"}, status=200)
             
-            return JsonResponse({"message" : "CART_QUANTITY_INCREASED"}, status=200)
-
-            
+            return JsonResponse({"message" : "PUT_IN_CART_SUCCESS"}, status=201)
 
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
