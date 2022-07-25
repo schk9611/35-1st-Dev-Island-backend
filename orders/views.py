@@ -34,24 +34,4 @@ class OrderView(View):
                     }
                 )
 
-        # orders_list = [
-        #     {
-        #         'id'       : order.id,
-        #         'order_num': order_num,
-        #         'user_name': order.user.first_name + order.user.last_name
-        #     } for order in Order.objects.filter(user=request.user)
-        # ]
-        # print(orders_list)
-
-        # products_list = [
-        #     {
-        #         'id'              : order_product.id,
-        #         'product_img'     : order_product.product.productimg_set.image_url,
-        #         'product_name'    : order_product.product.name,
-        #         'product_price'   : order_product.product.price * order_product.quantity,
-        #         'product_quantity': order_product.quantity,
-        #     } for order_product in OrderProduct.objects.filter(order_id=)
-        # ]
-        # print(products_list)
-
         return JsonResponse({'orders_list' : orders_list, 'products_list' : products_list}, status=200)
