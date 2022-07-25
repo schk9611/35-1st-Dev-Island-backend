@@ -4,7 +4,6 @@ from django.http import JsonResponse
 
 from django.views  import View
 from orders.models import Order, OrderProduct
-from users.models import User
 from users.utils   import signin_decorator
 
 class OrderView(View): 
