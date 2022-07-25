@@ -7,8 +7,8 @@ from products.models import Product, Category, SubCategory
 class ProductListView(View):
     def get(self, request):
         try:
-            main_category = request.GET.get('main_category')
-            sub_category  = request.GET.get('sub_category')
+            main_category = request.GET.get('main_category', 'speakers')
+            # sub_category  = request.GET.get('sub_category')
             sort_method   = request.GET.get('sort_method', '-release_date')
             limit         = int(request.GET.get('limit', 9))
             offset        = int(request.GET.get('offset', 0))
@@ -18,8 +18,8 @@ class ProductListView(View):
             if main_category:
                 q &= Q(sub_category__category__name=main_category)
 
-            elif sub_category:
-                q &= Q(sub_category__name=sub_category)
+            # elif sub_category:
+            #     q &= Q(sub_category__name=sub_category)
 
             products = Product.objects.filter(q).order_by(sort_method)
             products_list = products[offset:offset+limit]
