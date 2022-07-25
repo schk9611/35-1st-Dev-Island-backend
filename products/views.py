@@ -1,39 +1,46 @@
 from django.http  import JsonResponse
 from django.views import View
+from django.db.models import Q
 
 from products.models import Product, Category, SubCategory
 
 class ProductListView(View):
     def get(self, request):
         try:
-            category    = request.GET.get('category', 'speakers')
-            show        = request.GET.get('show', 'all')
-            sort_method = request.GET.get('sort_method', '-release_date')
-            limit       = int(request.GET.get('limit', 9))
-            offset      = int(request.GET.get('offset', 0))
+            main_category = request.GET.get('main_category')
+            sub_category  = request.GET.get('sub_category')
+            sort_method   = request.GET.get('sort_method', '-release_date')
+            limit         = int(request.GET.get('limit', 9))
+            offset        = int(request.GET.get('offset', 0))
 
-            if show == 'all':
-                category_id = Category.objects.get(name=category).id
-                products    = Product.objects.filter(sub_category__category_id=category_id).order_by(sort_method)
-            else:
-                sub_cate_id = SubCategory.objects.get(name=show).id
-                products    = Product.objects.filter(sub_category_id=sub_cate_id).order_by(sort_method)
+            q = Q()
 
-            res_products = [{
+            if main_category:
+                q &= Q(sub_category__category__name=main_category)
+
+            elif sub_category:
+                q &= Q(sub_category__name=sub_category)
+
+            products = Product.objects.filter(q).order_by(sort_method)
+            products_list = products[offset:offset+limit]
+
+            res_products = [
+                {
                     'id'          : product.id,
                     'name'        : product.name,
                     'description' : product.description,
                     'price'       : product.price,
                     'image_url'   : [image.image_url for image in product.productimage_set.all()],
                     'release_date': product.release_date,
-                } for product in products[offset:offset+limit]] 
+                } for product in products_list
+            ]
 
             return JsonResponse({'RESULT':res_products, 'totalItems' : products.count()}, status=200)
         
         except Category.DoesNotExist:
-            return JsonResponse({'message':'CATEGORY_DOES_NOT_EXIST'}, status=400)
+            return JsonResponse({'message':'CATEGORY_DOES_NOT_EXIST'}, status=404)
         except SubCategory.DoesNotExist:
-            return JsonResponse({'message':'SUB_CATEGORY_DOES_NOT_EXIST'}, status=400)
+            return JsonResponse({'message':'SUB_CATEGORY_DOES_NOT_EXIST'}, status=404)
 
 class ProductDetailView(View):
     def get(self, request, product_id):
