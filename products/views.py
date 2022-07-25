@@ -34,3 +34,21 @@ class ProductListView(View):
             return JsonResponse({'message':'CATEGORY_DOES_NOT_EXIST'}, status=400)
         except SubCategory.DoesNotExist:
             return JsonResponse({'message':'SUB_CATEGORY_DOES_NOT_EXIST'}, status=400)
+
+class ProductDetailView(View):
+    def get(self, request, product_id):
+        try:
+            product = Product.objects.get(id = product_id)
+            product_detail = {
+                'id'           : product.id,
+                'name'         : product.name,
+                'product_image': [product.image_url for product in product.productimage_set.all()],
+                'description'  : product.description,
+                'content_url'  : product.content_url,
+                'price'        : product.price,
+                'stock'        : product.stock
+            }
+            return JsonResponse({"result" : product_detail}, status=200)
+        
+        except Product.DoesNotExist:
+            return JsonResponse({"message" : "DoesNotExist"}, status=400)
