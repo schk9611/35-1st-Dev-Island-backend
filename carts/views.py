@@ -6,8 +6,6 @@ from django.views    import View
 from carts.models    import Cart
 from users.utils     import signin_decorator
 from products.models import Product
-from orders.models   import Order, OrderProduct
-
 
 class CartView(View):
     @signin_decorator
@@ -16,7 +14,7 @@ class CartView(View):
             data     = json.loads(request.body)
             quantity = data['quantity']
             product  = Product.objects.get(id=data['product_id'])
-
+            
             cart, created = Cart.objects.get_or_create(
                 defaults  = {'quantity' : quantity},
                 product   = product,
