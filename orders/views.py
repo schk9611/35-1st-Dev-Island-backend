@@ -1,4 +1,4 @@
-import datetime, re
+import json, datetime, re
 
 from django.http import JsonResponse
 
@@ -39,3 +39,19 @@ class OrderView(View):
             return JsonResponse({'orders_list' : orders_list, 'products_list' : products_list}, status=200)
         except JSONDecodeError:
             return JsonResponse({'message' : 'JSONDecoderError'}, status=400)
+
+    @signin_decorator
+    def patch(self, request):
+        try:
+            data = json.loads(request.body)
+            order_id = data['order_id']
+
+            change_status = Order.objects.get(id=order_id)
+            change_status.order_status_id = 2
+            change_status.save()
+            
+            return JsonResponse({'message' : 'CANCEL_ORDER'}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'message' : 'JSONDecoderError'}, status=400)
+        except KeyError:
+            return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
