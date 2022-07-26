@@ -7,6 +7,10 @@ from products.models import Product, Category, SubCategory
 class ProductListView(View):
     def get(self, request):
         try:
+            """
+            :8000/products?main_category=abc&limit=10
+            """
+
             main_category = request.GET.get('main_category', 'speakers')
             # sub_category  = request.GET.get('sub_category')
             sort_method   = request.GET.get('sort_method', '-release_date')
@@ -21,7 +25,7 @@ class ProductListView(View):
             # elif sub_category:
             #     q &= Q(sub_category__name=sub_category)
 
-            products = Product.objects.filter(q).order_by(sort_method)
+            products = Product.objects.filter(q).order_by(sort_method_dict.get(sort_method))
             products_list = products[offset:offset+limit]
 
             res_products = [
