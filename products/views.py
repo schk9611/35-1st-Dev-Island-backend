@@ -12,6 +12,7 @@ class ProductListView(View):
             sort_method   = request.GET.get('sort_method', '-release_date')
             limit         = int(request.GET.get('limit', 9))
             offset        = int(request.GET.get('offset', 0))
+            listType      = str(request.GET.get('listType', 9))
 
             q = Q()
 
@@ -21,7 +22,7 @@ class ProductListView(View):
             # elif sub_category:
             #     q &= Q(sub_category__name=sub_category)
 
-            products = Product.objects.filter(q).order_by(sort_method)
+            products      = Product.objects.filter(q).order_by(sort_method)
             products_list = products[offset:offset+limit]
 
             res_products = [
@@ -32,6 +33,7 @@ class ProductListView(View):
                     'price'       : product.price,
                     'image_url'   : [image.image_url for image in product.productimage_set.all()],
                     'release_date': product.release_date,
+                    'listType'    : listType
                 } for product in products_list
             ]
 
