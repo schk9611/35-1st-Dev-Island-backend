@@ -43,10 +43,12 @@ class OrderView(View):
     def patch(self, request):
         try:
             data = json.loads(request.body)
-            order_id = data['order_id']
+            order_id = data.get('od_id')
 
             order = Order.objects.get(id=order_id)
-            order.order_status_id = 2
+            if order.order_status_id == 2:
+                return JsonResponse({'message' : 'ALREADY_CHANGE'}, status=400)
+            order.order_status_id = 2 
             order.save()
             
             return JsonResponse({'message' : 'CANCEL_ORDER'}, status=200)
@@ -62,7 +64,7 @@ class OrderView(View):
         try:
             data  = json.loads(request.body)
             carts = Cart.objects.filter(id__in=data['cart_ids'])
-            
+
             with transaction.atomic():
                 order = Order.objects.create(
                     order_status_id = 1,
@@ -74,7 +76,7 @@ class OrderView(View):
                     quantity                = cart.quantity,
                     order_product_status_id = 1
                     )for cart in carts]
-                
+
                 OrderProduct.objects.bulk_create(order_product_list)
 
                 Cart.objects.filter(user=request.user, id__in=data['cart_ids']).delete()
