@@ -46,12 +46,14 @@ class OrderView(View):
             data = json.loads(request.body)
             order_id = data['order_id']
 
-            change_status = Order.objects.get(id=order_id)
-            change_status.order_status_id = 2
-            change_status.save()
+            order = Order.objects.get(id=order_id)
+            order.order_status_id = 2
+            order.save()
             
             return JsonResponse({'message' : 'CANCEL_ORDER'}, status=200)
         except json.JSONDecodeError:
             return JsonResponse({'message' : 'JSONDecoderError'}, status=400)
         except KeyError:
             return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
+        except Order.DoesNotExist:
+            return JsonResponse({'message' : 'ORDER_DOES_NOT_EXIST'}, status=404)
