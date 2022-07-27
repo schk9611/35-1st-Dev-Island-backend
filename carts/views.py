@@ -1,12 +1,9 @@
 import json
-
 from django.http     import JsonResponse
 from django.views    import View
-
 from carts.models    import Cart
 from users.utils     import signin_decorator
 from products.models import Product
-
 class CartView(View):
     @signin_decorator
     def post(self, request):
@@ -25,13 +22,11 @@ class CartView(View):
                 cart.save()
                 return JsonResponse({"message" : "CART_QUANTITY_CHANGED"}, status=200)
             return JsonResponse({"message" : "PUT_IN_CART_SUCCESS"}, status=201)
-
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
         
         except json.JSONDecodeError:
             return JsonResponse({'message':'JSONDecodeError'}, status=404)
-
     @signin_decorator
     def get(self, request):
         cart_products = [{
@@ -49,13 +44,11 @@ class CartView(View):
             data = json.loads(request.body)
             Cart.objects.filter(user=request.user, id__in=data['cart_ids']).delete()
             return JsonResponse({"message":"DELETE_SUCCESS"}, status=200)
-
         except json.JSONDecodeError:
             return JsonResponse({'message':'JSONDecodeError'}, status=404)
         
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
-
     @signin_decorator
     def patch(self, request):
         try: 
@@ -68,7 +61,6 @@ class CartView(View):
             cart_product.quantity += data['quantity']
             cart_product.save()
             return JsonResponse({"message" : "UPDATE_SUCCESS"}, status=200)
-
         except KeyError:
             return JsonResponse({"message" : "KEY_ERROR"}, status=400)
 
