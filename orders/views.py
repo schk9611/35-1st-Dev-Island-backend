@@ -1,14 +1,12 @@
-import json, re
+import re
 
 from requests      import JSONDecodeError
 
 from django.http   import JsonResponse
 from django.views  import View
-from django.db     import transaction
 
-from carts.models import Cart
 from users.utils   import signin_decorator
-from orders.models import Order, OrderProduct
+from orders.models import Order
 
 
 class OrderView(View): 
@@ -22,7 +20,6 @@ class OrderView(View):
                     {
                         'id'          : order.id,
                         'order_number': re.sub(r'[^0-9]', '', str(order.created_at)) + str(order.id),
-                        # 'order_total_price' : [sum+=sum for sum in Product.Object.filter()],
                         'products'    : [
                             {
                                 'id'          : order_product.id,
