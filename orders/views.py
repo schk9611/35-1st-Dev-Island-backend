@@ -32,20 +32,7 @@ class OrderView(View):
                     } for order in Order.objects.filter(user_id=request.user.id)
                 ]
             }
-
             
-                # for order_product in OrderProduct.objects.filter(order_id=order.id):
-                #     products_list.append(
-                #         {
-                #             'id'              : order_product.id,
-                #             'product_img'     : [img.image_url for img in order_product.product.productimage_set.all()],
-                #             'product_name'    : order_product.product.name,
-                #             'product_price'   : order_product.product.price,
-                #             'totalprice'      : order_product.product.price * order_product.quantity,
-                #             'product_quantity': order_product.quantity
-                #         }
-                #     )
-
             return JsonResponse({'RESULT' : result}, status=200)
         except JSONDecodeError:
             return JsonResponse({'message' : 'JSONDecoderError'}, status=400)
