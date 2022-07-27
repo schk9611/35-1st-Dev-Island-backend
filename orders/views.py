@@ -1,4 +1,4 @@
-import json, re
+import json
 
 from django.http import JsonResponse
 from django.db import transaction
@@ -23,10 +23,13 @@ class OrderView(View):
             order.save()
             
             return JsonResponse({'message' : 'CANCEL_ORDER'}, status=200)
+            
         except json.JSONDecodeError:
             return JsonResponse({'message' : 'JSONDecoderError'}, status=400)
+
         except KeyError:
             return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
+
         except Order.DoesNotExist:
             return JsonResponse({'message' : 'ORDER_DOES_NOT_EXIST'}, status=404)
 
