@@ -43,7 +43,7 @@ class OrderView(View):
     def patch(self, request):
         try:
             data = json.loads(request.body)
-            order_id = data.get('od_id')
+            order_id = data.get('order_id')
 
             order = Order.objects.get(id=order_id)
             if order.order_status_id == 2:
