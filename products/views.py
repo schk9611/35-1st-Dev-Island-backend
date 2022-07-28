@@ -10,7 +10,7 @@ class ProductListView(View):
             main_category = request.GET.get('main_category', 'speakers')
             # sub_category  = request.GET.get('sub_category')
             sort_method   = request.GET.get('sort_method', '-release_date')
-            limit         = int(request.GET.get('limit', 16))
+            limit         = int(request.GET.get('limit', 9))
             offset        = int(request.GET.get('offset', 0))
 
             q = Q()
