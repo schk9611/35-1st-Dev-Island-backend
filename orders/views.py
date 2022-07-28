@@ -1,16 +1,14 @@
-import json
+import json, re
 
-from django.http import JsonResponse
-from django.db import transaction
+from django.http   import JsonResponse
+from django.db     import transaction
 from django.views  import View
 
 from requests      import JSONDecodeError
 
 from orders.models import Order, OrderProduct
-from carts.models import Cart
+from carts.models  import Cart
 from users.utils   import signin_decorator
-from orders.models import Order
-
 
 class OrderView(View):
     @signin_decorator
