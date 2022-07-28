@@ -1,40 +1,39 @@
-import json
+import re
 
-from django.http     import JsonResponse
-from django.views    import View
-from django.db       import transaction
+from requests      import JSONDecodeError
 
-from carts.models    import Cart
-from users.utils     import signin_decorator
-from orders.models   import Order, OrderProduct
+from django.http   import JsonResponse
+from django.views  import View
+
+from users.utils   import signin_decorator
+from orders.models import Order
 
 
-class OrderView(View):
+class OrderView(View): 
     @signin_decorator
-    def post(self,request):
+    def get(self, request):
         try:
-            data  = json.loads(request.body)
-            carts = Cart.objects.filter(id__in=data['cart_ids'])
-            
-            with transaction.atomic():
-                order = Order.objects.create(
-                    order_status_id = 1,
-                    user_id         = request.user.id
-                )
-                order_product_list = [OrderProduct(
-                    order_id                = order.id,
-                    product_id              = cart.product_id,
-                    quantity                = cart.quantity,
-                    order_product_status_id = 1
-                    )for cart in carts]
-                
-                OrderProduct.objects.bulk_create(order_product_list)
+            result = {
+                'id'         : request.user.id,
+                'user_name'  : request.user.first_name + ' ' + request.user.last_name,
+                'orders_list': [
+                    {
+                        'id'          : order.id,
+                        'order_number': re.sub(r'[^0-9]', '', str(order.created_at)) + str(order.id),
+                        'products'    : [
+                            {
+                                'id'          : order_product.id,
+                                'product_img' : order_product.product.productimage_set.all()[0].image_url,
+                                'product_name': order_product.product.name,
+                                'product_price' : order_product.product.price,
+                                'quantity' : order_product.quantity,
+                                'product_total_price' : order_product.product.price * order_product.quantity
+                            } for order_product in order.orderproduct_set.all()
+                        ]
+                    } for order in Order.objects.filter(user_id=request.user.id)
+                ]
+            }
 
-                Cart.objects.filter(user=request.user, id__in=data['cart_ids']).delete()
-                return JsonResponse({"message" : "NEW_ORDER_CREATED"}, status=201)
-
-        except json.JSONDecodeError:
-            return JsonResponse({'message':'JSONDecodeError'}, status=404)
-
-        except KeyError:
-            return JsonResponse({"message" : "KEY_ERROR"}, status=400)
+            return JsonResponse({'RESULT' : result}, status=200)
+        except JSONDecodeError:
+            return JsonResponse({'message' : 'JSONDecoderError'}, status=400)
