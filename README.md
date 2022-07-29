@@ -43,6 +43,7 @@
   - limit, offset을 통한 pagination 구현
   - Q객체 사용: 데이터 정렬 후, 전송
 
+
 ## 모델링
 <img width="1400px" src="https://user-images.githubusercontent.com/91110192/181713064-a61209dc-5678-491c-b41e-5d59c664fb56.png"/>
 
