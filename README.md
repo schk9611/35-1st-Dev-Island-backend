@@ -1,6 +1,6 @@
 # PROJECT: We&Olufsen
 ## 소개
-- [Bango & Olufsen](https://www.bang-olufsen.com/ko/kr) 클론 사이트
+- [Bang & Olufsen](https://www.bang-olufsen.com/ko/kr) 클론 사이트
 - 고급 스피커 판매 사이트: 카테고리 분류, 회원관리, 장바구니, 주문, 정렬기능, 페이지네이션
 
 ## 팀 인원
