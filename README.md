@@ -32,7 +32,7 @@
   - transaction.atomic()으로 order에서 발생할 오류 방지
 - 장바구니(CartView)
   - POST, GET, DELETE, PATCH
-  - get_or_create 이용하여 장바구니에 존재하는 물품 
+  - get_or_create 이용하여 장바구니에 존재여부 고려
 
 **손찬규**
 - 로그인(LoginView)
