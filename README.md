@@ -52,3 +52,7 @@
 
 ## API 명세서
 [WeOlufsen API](https://pastoral-slice-3c4.notion.site/API-40dd9ab8a58f442baad377974f308ecc)
+
+## 참고
+- 이 프로젝트는 ![Banf & Olufsen](https://www.bang-olufsen.com/ko/kr) 사이트를 참조하여 학습 목적으로 만들었습니다.
+- 실무수준의 프로젝트이지만 학습용으로 만들었기 때문에 이 코드를 활용하여 이득을 취하거나 무단 배포할 경우 법적으로 문제될 수 있습니다.
