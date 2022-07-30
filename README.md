@@ -19,6 +19,7 @@
 
 ## Backend 역할
 **박서윤**
+- ERD 모델링
 - 회원가입(SignUpView)
   - POST
   - 정규식 통해 이메일과 패스워드 조건 확인
@@ -33,8 +34,10 @@
 - 장바구니(CartView)
   - POST, GET, DELETE, PATCH
   - get_or_create 이용하여 장바구니에 존재여부 고려
+  - 장바구니에 존재하는 제품일시 상품 개수 +1, 새로운 제품일 시 cart에 담기
 
 **손찬규**
+- ERD 모델링
 - 로그인(LoginView)
   - POST
   - JWT를 이용하여 토큰 발급
