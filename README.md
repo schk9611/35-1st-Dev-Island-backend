@@ -42,8 +42,8 @@
   - GET
   - limit, offset을 통한 pagination 구현
   - Q객체 사용: 데이터 정렬 후, 전송
-
-
+ 
+ 
 ## 모델링
 <img width="1400px" src="https://user-images.githubusercontent.com/91110192/181713064-a61209dc-5678-491c-b41e-5d59c664fb56.png"/>
 
@@ -51,8 +51,13 @@
 <img src="https://user-images.githubusercontent.com/91110192/181877787-b8f6c159-017d-4452-aac7-5b4e364c5f67.gif">
 
 ## API 명세서
-[WeOlufsen API](https://pastoral-slice-3c4.notion.site/API-40dd9ab8a58f442baad377974f308ecc)
+<img width="797" alt="스크린샷 2022-07-30 오후 3 33 59" src="https://user-images.githubusercontent.com/91110192/181878038-25f4d635-4407-4d84-b4f1-fbe2c041096f.png">
+<img width="789" alt="스크린샷 2022-07-30 오후 3 33 51" src="https://user-images.githubusercontent.com/91110192/181878041-6ccdd0d4-9a61-4354-9086-7fa46f2e6cf7.png">
+<img width="793" alt="스크린샷 2022-07-30 오후 3 33 35" src="https://user-images.githubusercontent.com/91110192/181878044-bf1f17df-6cf4-42ae-9a1e-25c518bbf126.png">
+<img width="796" alt="스크린샷 2022-07-30 오후 3 33 21" src="https://user-images.githubusercontent.com/91110192/181878045-98d8a784-5828-43f7-80f9-a6f403c55fba.png">
+
+* [WeOlufsen API](https://pastoral-slice-3c4.notion.site/API-40dd9ab8a58f442baad377974f308ecc)를 보시면, 자세한 API를 확인 가능합니다.
 
 ## 참고
-- 이 프로젝트는 [Banf & Olufsen](https://www.bang-olufsen.com/ko/kr) 사이트를 참조하여 학습 목적으로 만들었습니다.
+- 이 프로젝트는 [Bang & Olufsen](https://www.bang-olufsen.com/ko/kr) 사이트를 참조하여 학습 목적으로 만들었습니다.
 - 실무수준의 프로젝트이지만 학습용으로 만들었기 때문에 이 코드를 활용하여 이득을 취하거나 무단 배포할 경우 법적으로 문제될 수 있습니다.
